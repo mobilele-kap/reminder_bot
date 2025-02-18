@@ -1,0 +1,64 @@
+version: "3.6"
+services:
+  postgres:
+    container_name: reminder_bot_postgres_container
+    image: postgres:16.3
+    command:
+      - "postgres"
+      - "-c"
+      - "max_connections=50"
+      - "-c"
+      - "shared_buffers=512MB"
+      - "-c"
+      - "effective_cache_size=1GB"
+      - "-c"
+      - "work_mem=16MB"
+      - "-c"
+      - "maintenance_work_mem=512MB"
+      - "-c"
+      - "random_page_cost=1.1"
+      - "-c"
+      - "temp_file_limit=3GB"
+      - "-c"
+      - "log_min_duration_statement=200ms"
+      - "-c"
+      - "idle_in_transaction_session_timeout=300s"
+      - "-c"
+      - "lock_timeout=5s"
+      - "-c"
+      - "statement_timeout=60s"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+      - "-c"
+      - "pg_stat_statements.max=10000"
+      - "-c"
+      - "pg_stat_statements.track=all"
+    environment:
+      - POSTGRES_DB=reminder_bot
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRE_PASS}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - TZ=Asia/Novosibirsk
+    volumes:
+      - postgresdb_data:/var/lib/postgresql/data
+    networks:
+      sender_message_api:
+        aliases:
+          - postgre
+    ports:
+      - ${EX_INTERFACE_IP}:${EX_POSTGRE_PORT}:5432
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d reminder_bot" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+
+volumes:
+
+  postgresdb_data:
+    name: "reminder_bot_postgres_data"
+    external: true
