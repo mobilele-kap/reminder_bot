@@ -1,6 +1,6 @@
 from ..base import Base
 from ..standard_type import big_int_pk, created_at, updated_at, deleted, big_int_uc, code_name_uc
-from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy import mapped_column, ForeignKey, VARCHAR
 from sqlalchemy.dialects.postgresql import JSONB
 import datetime
@@ -15,6 +15,10 @@ class UserOrm(Base):
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]
 
+    user_event: Mapped[list["UserEventOrm"]] = relationship(
+        back_populates='user',
+    )
+
 
 class UserEventOrm(Base):
     __tablename__ = 'user_event'
@@ -27,6 +31,8 @@ class UserEventOrm(Base):
     deleted: Mapped[deleted]
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]
+
+    user: Mapped["UserOrm"] = relationship(back_populates='user_event')
 
 
 class UserEventTypeOrm(Base):
