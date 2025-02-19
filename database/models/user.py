@@ -17,7 +17,7 @@ class UserOrm(Base):
 
 
 class UserEventOrm(Base):
-    __tablename__ = 'user_alert'
+    __tablename__ = 'user_event'
 
     id: Mapped[big_int_pk]
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
