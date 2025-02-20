@@ -1,8 +1,9 @@
 from ..base import Base
 from ..standard_type import big_int_pk, created_at, updated_at, deleted, big_int_uc, code_name_uc
 from sqlalchemy.orm import Mapped, relationship
-from sqlalchemy import mapped_column, ForeignKey, VARCHAR
+from sqlalchemy import mapped_column, ForeignKey, VARCHAR, Index
 from sqlalchemy.dialects.postgresql import JSONB
+from typing import Optional
 import datetime
 
 
@@ -11,6 +12,7 @@ class UserOrm(Base):
 
     id: Mapped[big_int_pk]
     telegram_id: Mapped[big_int_uc]
+    telegram_login: Mapped[Optional[str]] = mapped_column(VARCHAR(256), comment='Логин telegram')
     deleted: Mapped[deleted]
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]
@@ -33,6 +35,7 @@ class UserEventOrm(Base):
     updated_at: Mapped[updated_at]
 
     user: Mapped["UserOrm"] = relationship(back_populates='user_event')
+    user_event_type: Mapped["UserEventTypeOrm"] = relationship(back_populates='user_event')
 
 
 class UserEventTypeOrm(Base):
@@ -42,3 +45,7 @@ class UserEventTypeOrm(Base):
     code_name: Mapped[code_name_uc]
     description: Mapped[str] = mapped_column(VARCHAR(4000), comment='Описание евента')
     created_at: Mapped[created_at]
+
+    user_event: Mapped[list["UserEventOrm"]] = relationship(back_populates='user_event_type')
+
+
