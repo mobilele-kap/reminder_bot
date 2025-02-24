@@ -34,15 +34,15 @@ services:
       - "-c"
       - "pg_stat_statements.track=all"
     environment:
-      - POSTGRES_DB=reminder_bot
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=${POSTGRE_PASS}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
       - PGDATA=/var/lib/postgresql/data/pgdata
       - TZ=Asia/Novosibirsk
     volumes:
       - postgresdb_data:/var/lib/postgresql/data
     networks:
-      sender_message_api:
+      reminder_bot:
         aliases:
           - postgre
     ports:
@@ -62,3 +62,8 @@ volumes:
   postgresdb_data:
     name: "reminder_bot_postgres_data"
     external: true
+
+networks:
+  reminder_bot:
+    name: reminder_bot
+    driver: bridge
