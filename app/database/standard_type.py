@@ -16,4 +16,4 @@ updated_at = Annotated[datetime.datetime, mapped_column(
     server_default=text("current_timestamp"),
     onupdate=datetime.datetime.now,
     comment='Дата обновленея записи')]
-deleted = Annotated[int, mapped_column(bool, comment='Является ли запись удаленной')]
+deleted = Annotated[bool, mapped_column(comment='Является ли запись удаленной')]

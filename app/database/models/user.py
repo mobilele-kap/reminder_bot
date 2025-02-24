@@ -1,7 +1,7 @@
 from ..base import Base
 from ..standard_type import big_int_pk, created_at, updated_at, deleted, big_int_uc, code_name_uc
-from sqlalchemy.orm import Mapped, relationship
-from sqlalchemy import mapped_column, ForeignKey, VARCHAR, Index
+from sqlalchemy.orm import Mapped, relationship, mapped_column
+from sqlalchemy import ForeignKey, VARCHAR, Index
 from sqlalchemy.dialects.postgresql import JSONB
 from typing import Optional
 import datetime
@@ -28,7 +28,7 @@ class UserEventOrm(Base):
     id: Mapped[big_int_pk]
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
     user_event_type_id: Mapped[int] = mapped_column(ForeignKey("user_event_type.id", ondelete="CASCADE"))
-    event_data: Mapped[JSONB] = mapped_column(comment='Информация для события')
+    event_data: Mapped[dict] = mapped_column(JSONB, comment='Информация для события')
     event_at: Mapped[datetime.datetime] = mapped_column(comment='Дата начала начала события')
     user_event_status_id: Mapped[int] = mapped_column(ForeignKey("user_event_status.id", ondelete="CASCADE"))
     created_at: Mapped[created_at]
@@ -39,7 +39,7 @@ class UserEventOrm(Base):
     user_event_type: Mapped["UserEventTypeOrm"] = relationship(back_populates='user_event')
 
     __table_args__ = (
-        Index("user_event_event_at_idx", "event_at")
+        Index("user_event_event_at_idx", "event_at"),
     )
 
 
@@ -56,7 +56,7 @@ class UserEventStatusOrm(Base):
     user_event: Mapped[list["UserEventOrm"]] = relationship(back_populates='user_event_status')
 
     __table_args__ = (
-        Index("user_event_status_code_name_idx", "code_name")
+        Index("user_event_status_code_name_idx", "code_name"),
     )
 
 
@@ -71,7 +71,7 @@ class UserEventTypeOrm(Base):
     user_event: Mapped[list["UserEventOrm"]] = relationship(back_populates='user_event_type')
 
     __table_args__ = (
-        Index("user_event_type_code_name_idx", "code_name")
+        Index("user_event_type_code_name_idx", "code_name"),
     )
 
 
